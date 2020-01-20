@@ -27,4 +27,8 @@ $container->set(
         )
 );
 
+// TODO session
+// TODO template engine
+// TODO DB connection
+
 return $container;

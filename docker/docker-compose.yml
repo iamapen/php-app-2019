@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  db:
+    build: ./mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: app2019
+      MYSQL_USER: dbuser
+      MYSQL_PASSWORD: dbpass
+      MYSQL_ROOT_PASSWORD: rootpass
+    ports:
+      - 3306:3306
+    volumes:
+      - ./mysql/initdb.d:/docker-entrypoint-initdb.d
+      - ./mysql/conf.d:/etc/mysql/conf.d
+      - ./log/mysql:/var/log/mysql

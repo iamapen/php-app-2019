@@ -19,6 +19,7 @@ trait Transactional
             $this->transactional->commit();
         } catch (\Throwable $e) {
             $this->transactional->rollback();
+            throw $e;
         }
         return $result;
     }

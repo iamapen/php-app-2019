@@ -40,8 +40,8 @@ class SqlDumper
                 $values[] = strval($value);
             } elseif (is_float($value)) {
                 $values[] = strval($value);
-            //} elseif (is_array($value)) {
-            //    $values[] = implode(',', $value);
+            } elseif (is_array($value)) {
+                //$values[] = implode(',', $value);
             } elseif (is_null($value)) {
                 $values[] = 'NULL';
             }

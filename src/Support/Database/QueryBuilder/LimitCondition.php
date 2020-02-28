@@ -59,36 +59,15 @@ class LimitCondition
     }
 
     /**
-     * カラム指定がない場合は空文字を返す
      * @param string[] $fieldWhiteList field or alias=>field
      * @return string
      */
     public function buildSelectPartStatement($fieldWhiteList): string
     {
-        if (empty($this->selectFields)) {
-            return '';
-        }
-
-        $selectFields = [];
-        foreach ($fieldWhiteList as $alias => $field) {
-            if (!is_string($alias)) {
-                if (false !== array_search($field, $this->selectFields, true)) {
-                    $selectFields[] = $field;
-                    continue;
-                }
-            }
-            if (false !== array_search($alias, $this->selectFields, true)) {
-                $selectFields[] = $field;
-                continue;
-            }
-        }
-
-        if (empty($selectFields)) {
-            return '';
-        }
+        $selectFields = $this->resolveFields($fieldWhiteList);
 
         $qb = new QueryBuilder(new NullConnection(new NullMysqlDriver()));
-        return $qb->select($selectFields)->getSQL() . ' ';
+        return rtrim($qb->select($selectFields)->getSQL(), ' ') . ' ';
     }
 
     /**
@@ -107,19 +86,70 @@ class LimitCondition
         return $sql;
     }
 
-    //public function merge(QueryBuilder $qb): QueryBuilder
-    //{
-    //    if (!empty($this->select)) {
-    //        $qb->select($this->select);
-    //    }
-    //    if (null !== $this->limit) {
-    //        if ($intLimit = $this->limit->getLimit()) {
-    //            $qb->setMaxResults($intLimit);
-    //        }
-    //        if ($intOffset = $this->limit->getOffset()) {
-    //            $qb->setFirstResult($intOffset);
-    //        }
-    //    }
-    //    return $qb;
-    //}
+    /**
+     * QueryBuilder のSELECTパートを、自身にマージして返す
+     * @param QueryBuilder $qb
+     * @return LimitCondition
+     */
+    public function mergeFromQb(QueryBuilder $qb): LimitCondition
+    {
+        $selectFields = array_values(array_unique(array_merge($this->selectFields, $qb->getQueryPart('select'))));
+        return static::createByArray($selectFields, $this->limit);
+    }
+
+    /**
+     * 自身のSELECTとLIMITを、QueryBuilderにマージして返す
+     * @param QueryBuilder $qb
+     * @return QueryBuilder
+     */
+    public function mergeToQb(QueryBuilder $qb, $selectableFields = []): QueryBuilder
+    {
+        $newQb = clone $qb;
+
+        $fields = $this->resolveFields($selectableFields);
+        if (!empty($fields)) {
+            $newQb->select(array_values(array_unique(array_merge($fields, $newQb->getQueryPart('select')))));
+        }
+
+        if (null !== $this->limit) {
+            if ($intLimit = $this->limit->getLimit()) {
+                $newQb->setMaxResults($intLimit);
+            }
+            if ($intOffset = $this->limit->getOffset()) {
+                $newQb->setFirstResult($intOffset);
+            }
+        }
+        return $newQb;
+    }
+
+    /**
+     * @param string[] $selectableFields field or alias=>field
+     * @return array
+     */
+    private function resolveFields($selectableFields)
+    {
+        $resolvedFields = [];
+
+        if (empty($selectableFields)) {
+            return [];
+        }
+
+        if (empty($this->selectFields)) {
+            return $selectableFields;
+        }
+
+        foreach ($selectableFields as $alias => $field) {
+            if (!is_string($alias)) {
+                if (false !== array_search($field, $this->selectFields, true)) {
+                    $resolvedFields[] = $field;
+                    continue;
+                }
+            }
+            if (false !== array_search($alias, $this->selectFields, true)) {
+                $resolvedFields[] = $field;
+                continue;
+            }
+        }
+        return $resolvedFields;
+    }
 }

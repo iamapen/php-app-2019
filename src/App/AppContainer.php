@@ -19,11 +19,11 @@ class AppContainer extends \DI\Container implements AppContainerInterface
 
     public function dbMainMaster(): PdoInterface
     {
-        return $this->get(AppContainerInterface::DB_MAIN_MASTER);
+        return $this->get(AppContainerInterface::DB_MASTER);
     }
 
     public function dbMainSlave(): PdoInterface
     {
-        return $this->get(AppContainerInterface::DB_MAIN_SLAVE);
+        return $this->get(AppContainerInterface::DB_SLAVE);
     }
 }

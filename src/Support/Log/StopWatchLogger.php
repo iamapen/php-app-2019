@@ -64,12 +64,33 @@ class StopWatchLogger
             $msg .= ' ' . $additionalMsg;
         }
         $this->logger->info(sprintf(
-            'end: %s elapsed="%s" start="%s" end="%s" memory="%s MiB"',
+            'end: %s elapsed="%s" start="%s" end="%s"',
             $msg,
             DateTimeUtility::secondsToHms(floor($ev->getDuration() / 1000)),
             date('Y-m-d H:i:s', (int) floor(($ev->getOrigin() + $ev->getStartTime()) / 1000)),
             date('Y-m-d H:i:s', (int) floor(($ev->getOrigin() + $ev->getEndTime()) / 1000)),
-            number_format($ev->getMemory() / 1024 / 1024, 3)
+        ));
+    }
+
+    /**
+     * 終了
+     * @param string $name
+     * @param string|null $additionalMsg 追加で出力したいメッセージ
+     */
+    public function lap($name, $additionalMsg = null)
+    {
+        $ev = $this->stopWatch->lap($name);
+
+        $msg = $name;
+        if (strval($additionalMsg) !== '') {
+            $msg .= ' ' . $additionalMsg;
+        }
+        $this->logger->info(sprintf(
+            'lap: %s elapsed="%s" start="%s" end="%s"',
+            $msg,
+            DateTimeUtility::secondsToHms(floor($ev->getDuration() / 1000)),
+            date('Y-m-d H:i:s', (int) floor(($ev->getOrigin() + $ev->getStartTime()) / 1000)),
+            date('Y-m-d H:i:s', (int) floor(($ev->getOrigin() + $ev->getEndTime()) / 1000)),
         ));
     }
 }

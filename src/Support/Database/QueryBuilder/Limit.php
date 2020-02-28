@@ -23,6 +23,17 @@ class Limit
         $this->offset = (int)$offset;
     }
 
+    public static function createByOffset($limit, $offset = 0)
+    {
+        return new static($limit, $offset);
+    }
+
+    public static function createByPageNo($perPage, $pageNo = 1)
+    {
+        $offset = $perPage * ($pageNo - 1);
+        return new static($perPage, $offset);
+    }
+
     /**
      * @return int
      */

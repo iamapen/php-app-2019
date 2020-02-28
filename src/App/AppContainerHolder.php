@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Acme\Support;
+namespace Acme\App;
 
 use Psr\Container\ContainerInterface;
 

@@ -12,8 +12,8 @@ interface AppContainerInterface extends ContainerInterface
     const LOGGER_ERROR = 'LOGGER_ERROR';
     const LOGGER_SQL = 'LOGGER_SQL';
 
-    const DB_MAIN_MASTER = 'DB_MAIN_MASTER';
-    const DB_MAIN_SLAVE = 'DB_MAIN_SLAVE';
+    const DB_MASTER = 'DB_MASTER';
+    const DB_SLAVE = 'DB_SLAVE';
 
     public function dbMainMaster(): PdoInterface;
 

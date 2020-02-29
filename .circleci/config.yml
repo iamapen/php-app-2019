@@ -9,11 +9,11 @@ jobs:
       # Specify the version you desire here
       - image: circleci/php:7.3-cli-stretch
         environment:
-          DB_MASTER_DATABASE: app2019
-          DB_MASTER_USERNAME: dbuser
-          DB_MASTER_PASSWORD: dbpass
+    #          DB_MASTER_DATABASE: app2019
+    #          DB_MASTER_USERNAME: dbuser
+    #          DB_MASTER_PASSWORD: dbpass
 
-      - image: circleci/mysql:5.7
+    #      - image: circleci/mysql:5.7
 
     steps:
       - checkout
@@ -36,9 +36,9 @@ jobs:
           paths:
             - ./vendor
 
-      - run:
-          name: Wait for DB
-          command: dockerize -wait tcp://127.0.0.1:3306 -timeout 120s
+      #      - run:
+      #          name: Wait for DB
+      #          command: dockerize -wait tcp://127.0.0.1:3306 -timeout 120s
 
       # run tests with phpunit or codecept
       - run: ./vendor/bin/phpunit -c phpunit_nodb.xml --coverage-html=$CIRCLE_ARTIFACTS

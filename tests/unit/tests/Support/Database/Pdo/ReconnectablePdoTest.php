@@ -5,36 +5,47 @@ namespace Acme\Support\Database\Pdo;
 use Acme\Test\Fake\Support\Database\Pdo\FakePdo;
 use Acme\Test\Fake\Support\Database\Pdo\FakePdoStatement;
 
-class ReconnectablePdoTest extends \Acme\Test\DbBaseTestCase
+class ReconnectablePdoTest extends \Acme\Test\TestCase\BaseTestCase
 {
 
     function test_createByPdo()
     {
-        $sut = ReconnectablePdo::createByPdo($this->getPdo(), $this->getPdoOpts(), $this->getPdoDsn(),
-            getenv('DB_MASTER_USERNAME'), getenv('DB_MASTER_PASSWORD'));
+        $sut = ReconnectablePdo::createByPdo(
+            new FakePdo(),
+            [\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION],
+            'mysql:host=localhost;dbname=foo;charset=utf8mb4',
+            getenv('DB_MASTER_USERNAME'), getenv('DB_MASTER_PASSWORD')
+        );
         $this->assertInstanceOf(ReconnectablePdo::class, $sut);
     }
 
     function test_createByClassName()
     {
-        $sut = ReconnectablePdo::createByClassName(Pdo::class, $this->getPdoOpts(), $this->getPdoDsn(),
-            getenv('DB_MASTER_USERNAME'), getenv('DB_MASTER_PASSWORD'), $this->getPdoOpts());
+        $sut = ReconnectablePdo::createByClassName(
+            FakePdo::class,
+            [\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION],
+            'mysql:host=localhost;dbname=foo;charset=utf8mb4',
+            getenv('DB_MASTER_USERNAME'), getenv('DB_MASTER_PASSWORD')
+        );
         $this->assertInstanceOf(ReconnectablePdo::class, $sut);
     }
 
     function test_createByClassName_PdoInterfaceでないとエラー()
     {
         $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('pdoClassName must be a Acme\Support\Database\Pdo\PdoInterface implemented class name, "PDO" given');
+        $this->expectExceptionMessage('pdoClassName must be a Acme\Support\Database\Pdo\PdoInterface implemented class name, "stdClass" given');
         $sut = ReconnectablePdo::createByClassName(
-            \PDO::class, $this->getPdoOpts(), $this->getPdoDsn(),
-            getenv('DB_MASTER_USERNAME'), getenv('DB_MASTER_PASSWORD'), $this->getPdoOpts()
+            \stdClass::class,
+            [\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION],
+            'mysql:host=localhost;dbname=foo;charset=utf8mb4',
+            getenv('DB_MASTER_USERNAME'), getenv('DB_MASTER_PASSWORD')
         );
     }
 
     /**
      * 再接続のテスト
      * 失敗するとunittest DBのwait_timeoutが変わってしまうので注意
+     * @group db
      */
     function test_reconnect()
     {

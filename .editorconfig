@@ -16,3 +16,6 @@ trim_trailing_whitespace = false
 
 [composer.json]
 indent_size = 4
+
+[phpunit_*.xml]
+indent_size = 4

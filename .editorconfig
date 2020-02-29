@@ -19,3 +19,6 @@ indent_size = 4
 
 [phpunit_*.xml]
 indent_size = 4
+
+[pmd.xml]
+indent_size = 4

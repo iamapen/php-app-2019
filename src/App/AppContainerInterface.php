@@ -8,12 +8,12 @@ use Psr\Log\LoggerInterface;
 
 interface AppContainerInterface extends ContainerInterface
 {
-    const LOGGER_APP = \Psr\Log\LoggerInterface::class;
-    const LOGGER_ERROR = 'LOGGER_ERROR';
-    const LOGGER_SQL = 'LOGGER_SQL';
+    public const LOGGER_APP = \Psr\Log\LoggerInterface::class;
+    public const LOGGER_ERROR = 'LOGGER_ERROR';
+    public const LOGGER_SQL = 'LOGGER_SQL';
 
-    const DB_MASTER = 'DB_MASTER';
-    const DB_SLAVE = 'DB_SLAVE';
+    public const DB_MASTER = 'DB_MASTER';
+    public const DB_SLAVE = 'DB_SLAVE';
 
     public function dbMainMaster(): PdoInterface;
 

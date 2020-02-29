@@ -8,6 +8,7 @@ interface PdoInterface extends PdoTransactionInterface
      * @param string $statement
      * @param array|null $driver_options
      * @return PdoStatementInterface
+     * @noinspection PhpDocSignatureInspection
      */
     public function prepare($statement);
 
@@ -23,6 +24,7 @@ interface PdoInterface extends PdoTransactionInterface
      * @param string|int $param2
      * @param string|int $param3
      * @return PdoStatementInterface
+     * @noinspection PhpDocSignatureInspection
      */
     public function query();
 

@@ -31,11 +31,4 @@ class ChainCommand extends Command
 
         return $helloCommand->run($helloInput, $output);
     }
-
-    /**
-     * @param InputInterface $input
-     */
-    private function validate(InputInterface $input)
-    {
-    }
 }

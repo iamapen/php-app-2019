@@ -16,6 +16,11 @@ class ArrayLruSimpleCache implements CacheInterface
     /** @var mixed[] */
     protected $items = [];
 
+    /**
+     * ArrayLruSimpleCache constructor.
+     * @param int $size
+     * @throws InvalidArgumentException
+     */
     public function __construct(int $size)
     {
         if ($size <= 0) {

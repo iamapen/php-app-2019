@@ -24,7 +24,8 @@ class ReconnectablePdo implements PdoInterface
      * @param mixed ...$constructorArgs PDOのコンストラクタに渡す引数
      * @return static
      */
-    public static function createByPdo(PdoInterface $pdo, array $pdoOptions=[], ...$constructorArgs) {
+    public static function createByPdo(PdoInterface $pdo, array $pdoOptions = [], ...$constructorArgs)
+    {
         return new static($pdo, $pdoOptions, ...$constructorArgs);
     }
 
@@ -34,10 +35,11 @@ class ReconnectablePdo implements PdoInterface
      * @param mixed ...$constructorArgs PDOのコンストラクタに渡す引数
      * @return static
      */
-    public static function createByClassName(string $pdoClassName, array $pdoOptions=[], ...$constructorArgs) {
+    public static function createByClassName(string $pdoClassName, array $pdoOptions = [], ...$constructorArgs)
+    {
         $pdo = new $pdoClassName(...$constructorArgs);
 
-        if(!($pdo instanceof PdoInterface)) {
+        if (!($pdo instanceof PdoInterface)) {
             throw new \InvalidArgumentException(sprintf(
                 'pdoClassName must be a %s implemented class name, "%s" given',
                 PdoInterface::class,
@@ -60,6 +62,7 @@ class ReconnectablePdo implements PdoInterface
 
     public function query()
     {
+        /** @noinspection PhpMethodParametersCountMismatchInspection */
         return $this->pdo->query(...func_get_args());
     }
 

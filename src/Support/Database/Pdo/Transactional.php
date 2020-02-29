@@ -10,6 +10,8 @@ trait Transactional
     /**
      * @param callable $func 一連のDBトランザクション
      * @return mixed callback次第
+     * @throws \PDOException
+     * @throws \Throwable
      */
     public function transaction(callable $func)
     {

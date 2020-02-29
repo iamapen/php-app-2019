@@ -4,5 +4,9 @@ namespace Acme\Support\Database\Pdo;
 
 class PdoStaetment extends \PDOStatement implements PdoStatementInterface
 {
-    protected function __construct() { }
+    private function __construct()
+    {
+        // do nothing
+        // コンストラクタが呼べてはならない
+    }
 }

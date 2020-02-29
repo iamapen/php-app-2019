@@ -8,9 +8,6 @@ use PHPUnit\Framework\TestCase;
 
 class MySqlErrorCheckerTest extends TestCase
 {
-    /**
-     * @group db
-     */
     function test_isTimeOutException()
     {
         $this->assertTrue(MySqlErrorChecker::isTimeOutException(new FakeMysqlTimeoutException()));

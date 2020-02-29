@@ -2,7 +2,6 @@
 
 namespace Acme\Support\Database\Pdo;
 
-use Acme\Test\Fake\FakeMysqlTimeoutException;
 use Acme\Test\Fake\Support\Database\Pdo\FakePdo;
 use Acme\Test\Fake\Support\Database\Pdo\FakePdoStatement;
 
@@ -65,31 +64,6 @@ class ReconnectablePdoTest extends \Acme\Test\DbBaseTestCase
         $sut->reconnect();
         $sut->exec("SET GLOBAL wait_timeout={$orgWaitTimeout}");
         $this->assertSame($ex, $sut->query($selectSql)->fetch());
-    }
-
-    function test_isTimeOutException()
-    {
-        $this->assertTrue(ReconnectablePdo::isTimeOutException(new FakeMysqlTimeoutException()));
-        // メッセージは違ってok
-        $this->assertTrue(ReconnectablePdo::isTimeOutException(new FakeMysqlTimeoutException('another message')));
-
-        // codeが違うとNG
-        $this->assertFalse(ReconnectablePdo::isTimeOutException(new \PDOException()));
-
-        // errorInfoの0番目が違うとNG
-        $e = new FakeMysqlTimeoutException();
-        $e->errorInfo[0] = 'invalid';
-        $this->assertFalse(ReconnectablePdo::isTimeOutException($e));
-
-        // errorInfoの1番目が違うNG
-        $e = new FakeMysqlTimeoutException();
-        $e->errorInfo[1] = 2007;
-        $this->assertFalse(ReconnectablePdo::isTimeOutException($e));
-
-        // errorInfoの2番目が違ってもok
-        $e = new FakeMysqlTimeoutException();
-        $e->errorInfo[2] = 'another message';
-        $this->assertTrue(ReconnectablePdo::isTimeOutException($e));
     }
 
     function test_prepare()

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c5d6823a948de08e9ee7664625c22c38",
+    "content-hash": "f6eae1667e9efd967222141089581610",
     "packages": [
         {
             "name": "doctrine/cache",
@@ -867,16 +867,16 @@
         },
         {
             "name": "symfony/polyfill-ctype",
-            "version": "v1.13.1",
+            "version": "v1.14.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-ctype.git",
-                "reference": "f8f0b461be3385e56d6de3dbb5a0df24c0c275e3"
+                "reference": "fbdeaec0df06cf3d51c93de80c7eb76e271f5a38"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-ctype/zipball/f8f0b461be3385e56d6de3dbb5a0df24c0c275e3",
-                "reference": "f8f0b461be3385e56d6de3dbb5a0df24c0c275e3",
+                "url": "https://api.github.com/repos/symfony/polyfill-ctype/zipball/fbdeaec0df06cf3d51c93de80c7eb76e271f5a38",
+                "reference": "fbdeaec0df06cf3d51c93de80c7eb76e271f5a38",
                 "shasum": ""
             },
             "require": {
@@ -888,7 +888,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.13-dev"
+                    "dev-master": "1.14-dev"
                 }
             },
             "autoload": {
@@ -921,7 +921,7 @@
                 "polyfill",
                 "portable"
             ],
-            "time": "2019-11-27T13:56:44+00:00"
+            "time": "2020-01-13T11:15:53+00:00"
         },
         {
             "name": "symfony/polyfill-mbstring",
@@ -1371,6 +1371,56 @@
                 "instantiate"
             ],
             "time": "2019-10-21T16:45:58+00:00"
+        },
+        {
+            "name": "iamapen/commentable-data-set",
+            "version": "5.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/iamapen/dbunit-CommentableDataSet.git",
+                "reference": "a2252a0f529ea330b70357174ab4888987df1002"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/iamapen/dbunit-CommentableDataSet/zipball/a2252a0f529ea330b70357174ab4888987df1002",
+                "reference": "a2252a0f529ea330b70357174ab4888987df1002",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mbstring": "*",
+                "kornrunner/dbunit": "^5.0",
+                "php": "^7.2"
+            },
+            "require-dev": {
+                "ext-pdo": "*",
+                "phpunit/phpunit": "^8.2|^9.0"
+            },
+            "type": "library",
+            "extra": {
+                "_branch-alias": []
+            },
+            "autoload": {
+                "psr-4": {
+                    "Iamapen\\CommentableDataSet\\DbUnit\\": "src/DbUnit/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Yosuke Kushida",
+                    "email": "iamapen@studiopoppy.com"
+                }
+            ],
+            "description": "Commentable CSV DataSet for DBUnit",
+            "homepage": "https://github.com/iamapen/dbunit-CommentableDataSet",
+            "keywords": [
+                "dbUnit",
+                "phpunit"
+            ],
+            "time": "2020-01-29T14:31:01+00:00"
         },
         {
             "name": "kornrunner/dbunit",
@@ -2894,6 +2944,8 @@
     "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": [],
+    "platform": {
+        "ext-pdo": "*"
+    },
     "platform-dev": []
 }

@@ -55,8 +55,10 @@ class HelloCommand extends Command
         $output->writeln('');
         $output->writeln($this->getName());
 
-        $dtBatchEnd = \DateTimeImmutable::createFromFormat('U.u', (string)microtime(true),
-            new \DateTimeZone(date_default_timezone_get()));
+        $dtBatchEnd = \DateTimeImmutable::createFromFormat(
+            'U.u', (string)microtime(true),
+            new \DateTimeZone(date_default_timezone_get())
+        );
         $output->writeln(
             sprintf(
                 "finished. %s sec.\n",

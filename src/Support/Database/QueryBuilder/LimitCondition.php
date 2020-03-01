@@ -100,6 +100,7 @@ class LimitCondition
     /**
      * 自身のSELECTとLIMITを、QueryBuilderにマージして返す
      * @param QueryBuilder $qb
+     * @param string[] $selectableFields
      * @return QueryBuilder
      */
     public function mergeToQb(QueryBuilder $qb, $selectableFields = []): QueryBuilder

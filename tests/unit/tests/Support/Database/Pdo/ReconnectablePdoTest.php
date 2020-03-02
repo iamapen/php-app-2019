@@ -79,48 +79,60 @@ class ReconnectablePdoTest extends \Acme\Test\TestCase\BaseTestCase
 
     function test_prepare()
     {
-        $sut = ReconnectablePdo::createByPdo(new FakePdo());
+        $pdo = new FakePdo();
+        $sut = ReconnectablePdo::createByPdo($pdo);
         $stmt = $sut->prepare('SELECT 1 FROM dual WHERE 1=?');
         $this->assertInstanceOf(FakePdoStatement::class, $stmt);
-        $this->assertSame('prepare', $stmt->errorCode());
+        $this->assertSame(['prepare'], $pdo->arrMsg);
     }
 
     public function test_exec()
     {
-        $sut = ReconnectablePdo::createByPdo(new FakePdo());
+        $pdo = new FakePdo();
+        $sut = ReconnectablePdo::createByPdo($pdo);
         $this->assertSame(100, $sut->exec('SELECT 1 FROM dual WHERE 1=?'));
+        $this->assertSame(['exec'], $pdo->arrMsg);
     }
 
     public function test_query()
     {
-        $sut = ReconnectablePdo::createByPdo(new FakePdo());
+        $pdo = new FakePdo();
+        $sut = ReconnectablePdo::createByPdo($pdo);
         $stmt = $sut->query('SELECT 1 FROM dual WHERE 1=?');
         $this->assertInstanceOf(FakePdoStatement::class, $stmt);
-        $this->assertSame('query', $stmt->errorCode());
+        $this->assertSame(['query'], $pdo->arrMsg);
     }
 
     public function test_quote()
     {
-        $sut = ReconnectablePdo::createByPdo(new FakePdo());
-        $this->assertSame('quote', $sut->quote('SELECT 1 FROM dual WHERE 1=?'));
+        $pdo = new FakePdo();
+        $sut = ReconnectablePdo::createByPdo($pdo);
+        $this->assertSame('q_abc', $sut->quote('abc'));
+        $this->assertSame(['quote'], $pdo->arrMsg);
     }
 
     public function test_lastInsertId()
     {
-        $sut = ReconnectablePdo::createByPdo(new FakePdo());
+        $pdo = new FakePdo();
+        $sut = ReconnectablePdo::createByPdo($pdo);
         $this->assertSame('lastInsertId', $sut->lastInsertId());
+        $this->assertSame(['lastInsertId'], $pdo->arrMsg);
     }
 
     public function test_errorCode()
     {
-        $sut = ReconnectablePdo::createByPdo(new FakePdo());
+        $pdo = new FakePdo();
+        $sut = ReconnectablePdo::createByPdo($pdo);
         $this->assertSame('errorCode', $sut->errorCode());
+        $this->assertSame(['errorCode'], $pdo->arrMsg);
     }
 
     public function test_errorInfo()
     {
-        $sut = ReconnectablePdo::createByPdo(new FakePdo());
+        $pdo = new FakePdo();
+        $sut = ReconnectablePdo::createByPdo($pdo);
         $this->assertSame(['errorInfo'], $sut->errorInfo());
+        $this->assertSame(['errorInfo'], $pdo->arrMsg);
     }
 
     public function test_setAttribute()
@@ -131,8 +143,10 @@ class ReconnectablePdoTest extends \Acme\Test\TestCase\BaseTestCase
 
     public function test_getAttribute()
     {
-        $sut = ReconnectablePdo::createByPdo(new FakePdo());
+        $pdo = new FakePdo();
+        $sut = ReconnectablePdo::createByPdo($pdo);
         $this->assertSame('getAttribute', $sut->getAttribute(\PDO::ATTR_ERRMODE));
+        $this->assertSame(['getAttribute'], $pdo->arrMsg);
     }
 
     function test_getAvailableDrivers()
@@ -142,25 +156,33 @@ class ReconnectablePdoTest extends \Acme\Test\TestCase\BaseTestCase
 
     public function test_inTransaction()
     {
-        $sut = ReconnectablePdo::createByPdo(new FakePdo());
+        $pdo = new FakePdo();
+        $sut = ReconnectablePdo::createByPdo($pdo);
         $this->assertTrue($sut->inTransaction());
+        $this->assertSame(['inTransaction'], $pdo->arrMsg);
     }
 
     public function test_beginTransaction()
     {
-        $sut = ReconnectablePdo::createByPdo(new FakePdo());
+        $pdo = new FakePdo();
+        $sut = ReconnectablePdo::createByPdo($pdo);
         $this->assertTrue($sut->beginTransaction());
+        $this->assertSame(['beginTransaction'], $pdo->arrMsg);
     }
 
     public function test_commit()
     {
-        $sut = ReconnectablePdo::createByPdo(new FakePdo());
+        $pdo = new FakePdo();
+        $sut = ReconnectablePdo::createByPdo($pdo);
         $this->assertTrue($sut->commit());
+        $this->assertSame(['commit'], $pdo->arrMsg);
     }
 
     public function test_rollback()
     {
-        $sut = ReconnectablePdo::createByPdo(new FakePdo());
+        $pdo = new FakePdo();
+        $sut = ReconnectablePdo::createByPdo($pdo);
         $this->assertTrue($sut->rollback());
+        $this->assertSame(['rollback'], $pdo->arrMsg);
     }
 }

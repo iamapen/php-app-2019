@@ -39,7 +39,7 @@ class FakePdo implements PdoInterface
     public function quote($string, $parameter_type = null)
     {
         $this->arrMsg[] = __FUNCTION__;
-        return __FUNCTION__;
+        return 'q_' . $string;
     }
 
     public function lastInsertId($seqname = null)

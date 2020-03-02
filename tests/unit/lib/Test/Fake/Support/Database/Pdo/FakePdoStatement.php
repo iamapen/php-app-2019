@@ -6,12 +6,5 @@ use Acme\Support\Database\Pdo\PdoStaetment;
 
 class FakePdoStatement extends PdoStaetment
 {
-    /** @var string|null */
-    public $str;
-
     public function __construct() { }
-
-    public function errorCode() {
-        return $this->str;
-    }
 }

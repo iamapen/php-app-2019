@@ -77,6 +77,36 @@ class ReconnectablePdoTest extends \Acme\Test\TestCase\BaseTestCase
         $this->assertSame($ex, $sut->query($selectSql)->fetch());
     }
 
+    /**
+     * @group db
+     */
+    function test_reconnectIfTimetouted_timeout起きない場合()
+    {
+        $sut = ReconnectablePdo::createByClassName(Pdo::class, $this->getPdoOpts(), $this->getPdoDsn(),
+            getenv('DB_MASTER_USERNAME'), getenv('DB_MASTER_PASSWORD'), $this->getPdoOpts());
+
+        $this->assertFalse($sut->reconnectIfTimeouted());
+    }
+
+    /**
+     * 失敗するとunittest DBのwait_timeoutが変わってしまうので注意
+     * @group db
+     */
+    function test_reconnectIfTimetouted_timeout起きた場合()
+    {
+        $pdo = $this->getPdo();
+        $orgWaitTimeout = $pdo->query("SHOW GLOBAL VARIABLES LIKE 'wait_timeout'")->fetch()['Value'];
+        // 要SUPER
+        $pdo->exec('SET GLOBAL wait_timeout=1');
+
+        $sut = ReconnectablePdo::createByClassName(Pdo::class, $this->getPdoOpts(), $this->getPdoDsn(),
+            getenv('DB_MASTER_USERNAME'), getenv('DB_MASTER_PASSWORD'), $this->getPdoOpts());
+        sleep(1);
+        $this->assertTrue(@$sut->reconnectIfTimeouted());
+
+        $sut->exec("SET GLOBAL wait_timeout={$orgWaitTimeout}");
+    }
+
     function test_prepare()
     {
         $pdo = new FakePdo();

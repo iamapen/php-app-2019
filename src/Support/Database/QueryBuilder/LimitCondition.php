@@ -28,7 +28,7 @@ class LimitCondition
      * @param Limit|null $limit
      * @return static
      */
-    public static function createByArray(array $selectFields, ?Limit $limit = null): self
+    public static function create(array $selectFields, ?Limit $limit = null): self
     {
         return new static($selectFields, $limit);
     }
@@ -79,7 +79,7 @@ class LimitCondition
             return '';
         }
 
-        $sql = sprintf('LIMIT %s ', $this->limit->getLimit());
+        $sql = sprintf(' LIMIT %s ', $this->limit->getLimit());
         if (0 !== $offset = $this->limit->getOffset()) {
             $sql .= sprintf('OFFSET %s ', $offset);
         }
@@ -91,10 +91,11 @@ class LimitCondition
      * @param QueryBuilder $qb
      * @return LimitCondition
      */
+    //public function mergeFromQb(QueryBuilder $qb): LimitCondition
     public function mergeFromQb(QueryBuilder $qb): LimitCondition
     {
         $selectFields = array_values(array_unique(array_merge($this->selectFields, $qb->getQueryPart('select'))));
-        return static::createByArray($selectFields, $this->limit);
+        return static::create($selectFields, $this->limit);
     }
 
     /**

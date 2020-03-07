@@ -25,6 +25,24 @@ trait Reconnectable
     }
 
     /**
+     * タイムアウトしているかどうかチェック、必要な場合は再接続する
+     * @return bool 再接続したかどうか
+     */
+    public function reconnectIfTimeouted(): bool
+    {
+        try {
+            $this->query('SELECT 1 FROM dual');
+        } catch (\PDOException $e) {
+            if (false === MySqlErrorChecker::isTimeOutException($e)) {
+                throw $e;
+            }
+            $this->reconnect();
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * @return PdoInterface
      */
     protected function newConnection(): PdoInterface
@@ -43,23 +61,5 @@ trait Reconnectable
     public function reconnect()
     {
         $this->pdo = $this->newConnection();
-    }
-
-    /**
-     * タイムアウトしているかどうかチェック、必要な場合は再接続する
-     * @return bool 再接続したかどうか
-     */
-    public function reconnectIfTimeouted(): bool
-    {
-        try {
-            $this->query('SELECT 1 FROM dual');
-        } catch (\PDOException $e) {
-            if (false === MySqlErrorChecker::isTimeOutException($e)) {
-                throw $e;
-            }
-            $this->reconnect();
-            return true;
-        }
-        return false;
     }
 }

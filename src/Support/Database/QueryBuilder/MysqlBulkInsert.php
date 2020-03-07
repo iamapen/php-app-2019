@@ -25,7 +25,7 @@ class MysqlBulkInsert
         foreach ($chunk as $row) {
             $sql .= '(';
             foreach ($row as $i => $val) {
-                $sql .= $pdo->quote($val) . ',';
+                $sql .= $pdo->quote((string)$val) . ',';
             }
             $sql = substr($sql, 0, -1);
             $sql .= '),';

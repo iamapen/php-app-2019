@@ -2,7 +2,7 @@
 
 namespace Acme\Support\Database\Pdo;
 
-class NoopPdoStatement implements PdoStatementInterface, \Iterator
+class NoopPdoStatement implements \Iterator, PdoStatementInterface
 {
     /**
      * @inheritDoc

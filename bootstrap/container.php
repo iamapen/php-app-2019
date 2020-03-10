@@ -1,34 +1,25 @@
-<?php
+<?php declare(strict_types=1);
+
 /**
  * コンテナ設定
  * @return \Psr\Container\ContainerInterface
  */
-declare(strict_types=1);
 
-use Monolog\Handler\RotatingFileHandler;
-use Monolog\Logger;
-use Psr\Log\LoggerInterface;
+use Acme\App\AppContainer;
+use Acme\App\AppContainerHolder;
+use Acme\App\AppContainerInterface;
 
-$container = (new DI\ContainerBuilder())
-    ->build();
+$builder = (new DI\ContainerBuilder(AppContainer::class));
 
-$container->set(
-    LoggerInterface::class,
-    (new Logger('app'))
-        ->pushHandler(
-            (new RotatingFileHandler(
-                __DIR__ . '/../storage/logs/' . PHP_SAPI . '.log',
-                30,
-                getenv('LOG_LEVEL'),
-                true,
-                0666
-            ))
-                ->setFilenameFormat('{filename}_{date}', 'Ymd')
-        )
-);
+$builder->addDefinitions(__DIR__ . '/container/log.php');
 
 // TODO session
 // TODO template engine
 // TODO DB connection
+
+/* @var $container AppContainerInterface */
+$container = $builder->build();
+\Monolog\ErrorHandler::register($container->loggerError());
+AppContainerHolder::init($container);
 
 return $container;

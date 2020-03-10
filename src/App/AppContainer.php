@@ -13,6 +13,16 @@ class AppContainer extends \DI\Container implements AppContainerInterface
         return $this->get(AppContainerInterface::LOGGER_APP);
     }
 
+    public function loggerError(): LoggerInterface
+    {
+        return $this->get(AppContainerInterface::LOGGER_ERROR);
+    }
+
+    public function loggerCli(): LoggerInterface
+    {
+        return $this->get(AppContainerInterface::LOGGER_CLI);
+    }
+
     /** @throws \Psr\Container\ContainerExceptionInterface */
     public function loggerSql(): LoggerInterface
     {

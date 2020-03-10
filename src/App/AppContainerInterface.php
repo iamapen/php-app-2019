@@ -11,6 +11,7 @@ interface AppContainerInterface extends ContainerInterface
     public const LOGGER_APP = \Psr\Log\LoggerInterface::class;
     public const LOGGER_ERROR = 'LOGGER_ERROR';
     public const LOGGER_SQL = 'LOGGER_SQL';
+    public const LOGGER_CLI = 'LOGGER_cli';
 
     public const DB_MASTER = 'DB_MASTER';
     public const DB_SLAVE = 'DB_SLAVE';
@@ -21,5 +22,9 @@ interface AppContainerInterface extends ContainerInterface
 
     public function loggerApp(): LoggerInterface;
 
+    public function loggerError(): LoggerInterface;
+
     public function loggerSql(): LoggerInterface;
+
+    public function loggerCli(): LoggerInterface;
 }

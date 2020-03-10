@@ -11,7 +11,7 @@ class Gender extends Enum
     /** @var string 女 */
     public const FEMALE = 'f';
 
-    private function __construct($value)
+    protected function __construct($value)
     {
         parent::__construct($value);
     }

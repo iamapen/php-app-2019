@@ -7,9 +7,17 @@ use Acme\Support\Database\Pdo\ReconnectablePdo;
 
 class AppPdo extends Pdo
 {
-    public function __construct($dsn, $username = null, $passwd = null, $options = null)
+    public function __construct($dsn, $username = null, $passwd = null, array $options = [])
     {
-        parent::__construct($dsn, $username, $passwd, $options);
+        $pdoOpts = [
+            \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+            \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
+        ];
+        foreach ($options as $key => $val) {
+            $pdoOpts[$key] = $val;
+        }
+
+        parent::__construct($dsn, $username, $passwd, $pdoOpts);
         $this->setSqlMode();
     }
 

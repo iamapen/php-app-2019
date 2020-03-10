@@ -10,7 +10,8 @@ use Psr\Log\LogLevel;
 
 // 環境変数
 putenv(sprintf('APP_ROOT=%s', realpath(__DIR__ . '/..')));
-putenv(sprintf('TMP_DIR=%s', getenv('APP_ROOT') . '/storage/tmp'));
+putenv(sprintf('STORAGE_DIR=%s', getenv('APP_ROOT') . '/storage'));
+putenv(sprintf('TMP_DIR=%s', getenv('STORAGE_DIR') . '/tmp'));
 
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
 $dotenv->load();

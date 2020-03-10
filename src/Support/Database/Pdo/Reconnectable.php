@@ -17,7 +17,6 @@ trait Reconnectable
     /** @var array */
     private $pdoOpts = [];
 
-
     protected function initReconnectable(array $pdoConstructorArgs, array $pdoOpts, string $pdoClassname)
     {
         $this->pdoConstructorArgs = $pdoConstructorArgs;
@@ -26,25 +25,21 @@ trait Reconnectable
     }
 
     /**
-     * サーバサイドタイムアウト(MySQL server has gone away) の例外かどうかを返す
-     * @param \PDOException $e
-     * @return bool
+     * タイムアウトしているかどうかチェック、必要な場合は再接続する
+     * @return bool 再接続したかどうか
      */
-    public static function isTimeOutException(\PDOException $e): bool
+    public function reconnectIfTimeouted(): bool
     {
-        if ($e->getCode() !== 'HY000') {
-            return false;
+        try {
+            $this->query('SELECT 1 FROM dual');
+        } catch (\PDOException $e) {
+            if (false === MySqlErrorChecker::isTimeOutException($e)) {
+                throw $e;
+            }
+            $this->reconnect();
+            return true;
         }
-        if ($e->errorInfo[0] !== 'HY000') {
-            return false;
-        }
-        if ($e->errorInfo[1] !== 2006) {
-            return false;
-        }
-        //if ($e->errorInfo[2] !== 'MySQL server has gone away') {
-        //    return false;
-        //}
-        return true;
+        return false;
     }
 
     /**

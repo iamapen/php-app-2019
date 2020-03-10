@@ -2,20 +2,18 @@
 
 namespace Acme\App;
 
-use Psr\Container\ContainerInterface;
-
 /**
  * Containerをstaticに持つだけのもの
  */
 class AppContainerHolder
 {
     /** @var AppContainerInterface */
-    static private $container;
+    private static $container;
 
     /**
      * @return AppContainerInterface
      */
-    static public function instance()
+    public static function instance()
     {
         if (!isset(self::$container)) {
             throw new \RuntimeException('not initialized');
@@ -26,7 +24,7 @@ class AppContainerHolder
     /**
      * @param AppContainerInterface $container
      */
-    public static function init(ContainerInterface $container)
+    public static function init(AppContainerInterface $container)
     {
         static::$container = $container;
     }

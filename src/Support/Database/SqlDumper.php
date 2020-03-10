@@ -14,7 +14,7 @@ class SqlDumper
      * @param array $params placeholders
      * @return string binded sql
      */
-    static public function dump(string $psql, ?array $params = []): string
+    public static function dump(string $psql, ?array $params = []): string
     {
         $keys = [];
         $values = [];
@@ -40,8 +40,6 @@ class SqlDumper
                 $values[] = strval($value);
             } elseif (is_float($value)) {
                 $values[] = strval($value);
-            } elseif (is_array($value)) {
-                //$values[] = implode(',', $value);
             } elseif (is_null($value)) {
                 $values[] = 'NULL';
             }

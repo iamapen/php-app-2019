@@ -1,7 +1,8 @@
 {
     "require-dev": {
         "phpunit/phpunit": "^8.0",
-        "kornrunner/dbunit": "^5.0"
+        "kornrunner/dbunit": "^5.0",
+        "iamapen/commentable-data-set": "^5.0"
     },
     "require": {
         "ext-pdo": "*",

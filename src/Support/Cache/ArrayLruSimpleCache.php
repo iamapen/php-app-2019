@@ -9,14 +9,25 @@ use Psr\SimpleCache\CacheInterface;
  */
 class ArrayLruSimpleCache implements CacheInterface
 {
-
     /** @var int */
     protected $maxSize;
 
     /** @var mixed[] */
     protected $items = [];
 
-    public function __construct(int $size)
+    /** @var int LRUされた回数 */
+    private $rotatedCount = 0;
+
+    /** @var callable */
+    private $callback;
+
+    /**
+     * ArrayLruSimpleCache constructor.
+     * @param int $size
+     * @param callable|null $callBack LRU発生時に実行するcallback. 引数にLRUされたkey, itemを取る。
+     * @throws InvalidArgumentException
+     */
+    public function __construct(int $size, ?callable $callBack = null)
     {
         if ($size <= 0) {
             throw new InvalidArgumentException(sprintf(
@@ -25,6 +36,7 @@ class ArrayLruSimpleCache implements CacheInterface
             ));
         }
         $this->maxSize = $size;
+        $this->callback = $callBack;
     }
 
     /**
@@ -58,8 +70,7 @@ class ArrayLruSimpleCache implements CacheInterface
         $this->items[$key] = $value;
         if ($this->getSize() > $this->maxSize) {
             // 新規追加で保存数上限を超えている場合、LRU
-            reset($this->items);
-            unset($this->items[key($this->items)]);
+            $this->rotate();
         }
         return true;
     }
@@ -155,7 +166,7 @@ class ArrayLruSimpleCache implements CacheInterface
      * 最終参照にする
      * @param string $key
      */
-    protected function reTouch(string $key): void
+    protected function reTouch($key): void
     {
         $value = $this->items[$key];
         unset($this->items[$key]);
@@ -169,5 +180,34 @@ class ArrayLruSimpleCache implements CacheInterface
     public function getSize(): int
     {
         return count($this->items);
+    }
+
+    public function getAll(): array
+    {
+        return $this->items;
+    }
+
+    private function rotate()
+    {
+        // 新規追加で保存数上限を超えている場合、LRU
+        reset($this->items);
+        $rotateKey = key($this->items);
+
+        // callback
+        if ($this->callback !== null) {
+            call_user_func_array($this->callback, [$rotateKey, $this->items[$rotateKey]]);
+        }
+
+        unset($this->items[key($this->items)]);
+        $this->rotatedCount++;
+    }
+
+    /**
+     * LRUでローテーションされた回数を返す
+     * @return int
+     */
+    public function getRotatedCount(): int
+    {
+        return $this->rotatedCount;
     }
 }

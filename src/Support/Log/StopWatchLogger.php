@@ -67,8 +67,8 @@ class StopWatchLogger
             'end: %s elapsed="%s" start="%s" end="%s"',
             $msg,
             DateTimeUtility::secondsToHms(floor($ev->getDuration() / 1000)),
-            date('Y-m-d H:i:s', (int) floor(($ev->getOrigin() + $ev->getStartTime()) / 1000)),
-            date('Y-m-d H:i:s', (int) floor(($ev->getOrigin() + $ev->getEndTime()) / 1000)),
+            date('Y-m-d H:i:s', (int)floor(($ev->getOrigin() + $ev->getStartTime()) / 1000)),
+            date('Y-m-d H:i:s', (int)floor(($ev->getOrigin() + $ev->getEndTime()) / 1000)),
         ));
     }
 
@@ -89,8 +89,8 @@ class StopWatchLogger
             'lap: %s elapsed="%s" start="%s" end="%s"',
             $msg,
             DateTimeUtility::secondsToHms(floor($ev->getDuration() / 1000)),
-            date('Y-m-d H:i:s', (int) floor(($ev->getOrigin() + $ev->getStartTime()) / 1000)),
-            date('Y-m-d H:i:s', (int) floor(($ev->getOrigin() + $ev->getEndTime()) / 1000)),
+            date('Y-m-d H:i:s', (int)floor(($ev->getOrigin() + $ev->getStartTime()) / 1000)),
+            date('Y-m-d H:i:s', (int)floor(($ev->getOrigin() + $ev->getEndTime()) / 1000)),
         ));
     }
 }

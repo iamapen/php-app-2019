@@ -9,14 +9,18 @@ jobs:
       # Specify the version you desire here
       - image: circleci/php:7.3-cli-stretch
         environment:
-          DB_MASTER_DATABASE: app2019
-          DB_MASTER_USERNAME: dbuser
-          DB_MASTER_PASSWORD: dbpass
+          CIRCLE_ARTIFACTS: /tmp/circleci-artifacts
+          CIRCLE_TEST_REPORTS: /tmp/circleci-test-results
+    #          DB_MASTER_DATABASE: app2019
+    #          DB_MASTER_USERNAME: dbuser
+    #          DB_MASTER_PASSWORD: dbpass
 
-      - image: circleci/mysql:5.7
+    #      - image: circleci/mysql:5.7
 
     steps:
       - checkout
+
+      - run: mkdir -p $CIRCLE_ARTIFACTS $CIRCLE_TEST_REPORTS
 
       #- run: sudo apt update # PHP CircleCI 2.0 Configuration File# PHP CircleCI 2.0 Configuration File sudo apt install zlib1g-dev libsqlite3-dev
       - run: sudo docker-php-ext-install mbstring pdo_mysql
@@ -36,9 +40,19 @@ jobs:
           paths:
             - ./vendor
 
-      - run:
-          name: Wait for DB
-          command: dockerize -wait tcp://127.0.0.1:3306 -timeout 120s
+      #      - run:
+      #          name: Wait for DB
+      #          command: dockerize -wait tcp://127.0.0.1:3306 -timeout 120s
 
       # run tests with phpunit or codecept
-      - run: ./vendor/bin/phpunit
+      - run: ./vendor/bin/phpunit -c phpunit_nodb.xml --coverage-html=$CIRCLE_ARTIFACTS
+
+
+      # Save test results
+      - store_test_results:
+          path: /tmp/circleci-test-results
+      # Save artifacts
+      - store_artifacts:
+          path: /tmp/circleci-artifacts
+      - store_artifacts:
+          path: /tmp/circleci-test-results

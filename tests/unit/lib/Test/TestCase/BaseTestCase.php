@@ -1,16 +1,17 @@
 <?php
 
-namespace Acme\Test;
+namespace Acme\Test\TestCase;
 
 abstract class BaseTestCase extends \PHPUnit\Framework\TestCase
 {
+    use DbConnectable;
 
-    function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
     }
 
-    function tearDown(): void
+    protected function tearDown(): void
     {
         parent::tearDown();
     }

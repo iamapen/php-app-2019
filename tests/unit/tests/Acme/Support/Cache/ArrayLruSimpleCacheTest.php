@@ -4,12 +4,14 @@ use Acme\Support\Cache\ArrayLruSimpleCache;
 
 class ArrayLruSimpleCacheTest extends \PHPUnit\Framework\TestCase
 {
-    function test_construct() {
+    function test_construct()
+    {
         $sut = new ArrayLruSimpleCache(3);
         $this->assertInstanceOf(\Psr\SimpleCache\CacheInterface::class, $sut);
     }
 
-    function test_construct_invalid() {
+    function test_construct_invalid()
+    {
         $this->expectException(\Psr\SimpleCache\CacheException::class);
         $this->expectExceptionMessage('Size must be a positive integer, "-1" given');
         $sut = new ArrayLruSimpleCache(-1);
@@ -88,7 +90,8 @@ class ArrayLruSimpleCacheTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(['bar', 'fuga'], $sut->getMultiple($iterable));
     }
 
-    function test_getMultiple_invalid() {
+    function test_getMultiple_invalid()
+    {
         $this->expectException(\Psr\SimpleCache\CacheException::class);
         $this->expectExceptionMessage('Cache keys must be array or Traversable, "string" given');
 
@@ -129,7 +132,8 @@ class ArrayLruSimpleCacheTest extends \PHPUnit\Framework\TestCase
         $this->assertSame('fuga', $sut->get('2'));
     }
 
-    function test_setMultiple_invalid() {
+    function test_setMultiple_invalid()
+    {
         $this->expectException(\Psr\SimpleCache\CacheException::class);
         $this->expectExceptionMessage('Cache values must be array or Traversable, "string" given');
 
@@ -167,7 +171,8 @@ class ArrayLruSimpleCacheTest extends \PHPUnit\Framework\TestCase
         $this->assertSame(null, $sut->get('hoge'));
     }
 
-    function test_deleteMultiple_invalid() {
+    function test_deleteMultiple_invalid()
+    {
         $this->expectException(\Psr\SimpleCache\CacheException::class);
         $this->expectExceptionMessage('Cache keys must be array or Traversable, "string" given');
 
@@ -175,7 +180,8 @@ class ArrayLruSimpleCacheTest extends \PHPUnit\Framework\TestCase
         $sut->deleteMultiple('invalid');
     }
 
-    function test_has() {
+    function test_has()
+    {
         $sut = new ArrayLruSimpleCache(3);
         $sut->set('foo', 'bar');
 
@@ -187,13 +193,24 @@ class ArrayLruSimpleCacheTest extends \PHPUnit\Framework\TestCase
         $this->assertFalse($sut->has('undef'));
     }
 
-    function test_getSize() {
+    function test_getSize()
+    {
         $sut = new ArrayLruSimpleCache(3);
 
         $this->assertSame(0, $sut->getSize());
 
         $sut->set('foo', 'bar');
         $this->assertSame(1, $sut->getSize());
+    }
+
+    function test_getAll()
+    {
+        $sut = new ArrayLruSimpleCache(3);
+        $sut->set('a', 'A');
+        $sut->set('b', 'B');
+
+        $ex = ['a' => 'A', 'b' => 'B'];
+        $this->assertSame($ex, $sut->getAll());
     }
 
     function test_LRUなこと()
@@ -213,5 +230,46 @@ class ArrayLruSimpleCacheTest extends \PHPUnit\Framework\TestCase
         // 3個目足すと消える
         $sut->set('F', 'F');
         $this->assertFalse($sut->has('b'));
+    }
+
+    function test_LRUでcallbackが実行されること()
+    {
+        $displayRotatedItem = null;
+        $displayRotatedKey = null;
+        $sut = new ArrayLruSimpleCache(3, function ($key, $item) use (&$displayRotatedKey, &$displayRotatedItem) {
+            $displayRotatedKey = $key;
+            $displayRotatedItem = $item;
+        });
+        $this->assertSame(null, $displayRotatedItem);
+
+        // 3個足しても大丈夫
+        $sut->setMultiple(['a', 'b', 'c']);
+        $this->assertSame(null, $displayRotatedItem);
+        // 先頭を触っておく
+        $sut->get(0);
+
+        // 4個目でLRU発生
+        $sut->set('F', 'F');
+        $this->assertSame('b', $displayRotatedItem);
+        $this->assertSame(1, $displayRotatedKey);
+    }
+
+    function test_getRotatedCount()
+    {
+        $sut = new ArrayLruSimpleCache(3);
+        $this->assertSame(0, $sut->getRotatedCount());
+
+        // 3個足しても大丈夫
+        $sut->setMultiple(['a', 'b', 'c']);
+        $this->assertSame(0, $sut->getRotatedCount());
+
+        // 4個目でLRU発生
+        $sut->set('F', 'F');
+        $this->assertFalse($sut->has('b'));
+        $this->assertSame(1, $sut->getRotatedCount());
+
+        // さらに2回発生
+        $sut->setMultiple(['X', 'Y']);
+        $this->assertSame(3, $sut->getRotatedCount());
     }
 }

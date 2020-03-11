@@ -66,4 +66,35 @@ class ArrayUtilTest extends TestCase
         ];
         $this->assertSame($ex, ArrayUtil::addTable($table1, $table2));
     }
+
+    function test_chunkingAdd()
+    {
+        // 空に追加
+        $srcChunk = [];
+        $arr2 = [1, 2, 3, 4, 5];
+        $ex = [
+            [1, 2],
+            [3, 4],
+            [5],
+        ];
+        $this->assertSame($ex, ArrayUtil::chunkingAdd(2, $srcChunk, $arr2));
+
+        // 最初から新チャンクになるケース
+        $srcChunk = [[1, 2, 3]];
+        $arr2 = [4, 5, 6, 7, 8, 9, 10];
+        $ex = [
+            [1, 2, 3],
+            [4, 5, 6],
+            [7, 8, 9],
+            [10],
+        ];
+        $this->assertSame($ex, ArrayUtil::chunkingAdd(3, $srcChunk, $arr2));
+
+        // 追加が空のケース
+        $srcChunk = [[1, 2]];
+        $this->assertSame($srcChunk, ArrayUtil::chunkingAdd(3, $srcChunk, []));
+
+        // 両方空のケース
+        $this->assertSame([], ArrayUtil::chunkingAdd(3, [], []));
+    }
 }

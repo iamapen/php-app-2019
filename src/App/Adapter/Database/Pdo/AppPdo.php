@@ -21,7 +21,7 @@ class AppPdo extends Pdo
         $this->setSqlMode();
     }
 
-    public static function reconnectable($dsn, $username = null, $passwd = null, $options = null): ReconnectablePdo
+    public static function asReconnectable($dsn, $username = null, $passwd = null, $options = null): ReconnectablePdo
     {
         return ReconnectablePdo::createByClassName(
             static::class, $options,

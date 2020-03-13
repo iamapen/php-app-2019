@@ -5,16 +5,17 @@ namespace Acme\App\Adapter\Database\Dao;
 use Acme\Support\Database\Pdo\PdoInterface;
 use Acme\Support\Database\Pdo\PdoStatementInterface;
 use Acme\Support\Database\SqlDumper;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 
-abstract class DaoBase
+abstract class DaoBase implements LoggerAwareInterface
 {
+    use LoggerAwareTrait;
+
     /** @var PdoInterface */
     protected $pdo;
-
-    /** @var LoggerInterface */
-    private $logger;
 
     public function __construct(PdoInterface $pdo, ?LoggerInterface $logger = null)
     {
@@ -33,13 +34,26 @@ abstract class DaoBase
      */
     protected function prepareAndExecute($statement, ?array $input_parameters = null)
     {
-        $this->logger->debug(SqlDumper::dump(
-            preg_replace('/[\p{C}\p{Z}]++/u', ' ', $statement),
-            $input_parameters
-        ));
+        if (!($this->logger instanceof NullLogger)) {
+            $this->logger->debug(SqlDumper::dump(
+                preg_replace('/[\p{C}\p{Z}]++/u', ' ', $statement),
+                $input_parameters
+            ));
+        }
+
         $stmt = $this->pdo->prepare($statement);
         $stmt->execute($input_parameters);
         return $stmt;
+    }
+
+    protected function exec($statement): int
+    {
+        if (!($this->logger instanceof NullLogger)) {
+            $this->logger->debug(SqlDumper::dump(
+                preg_replace('/[\p{C}\p{Z}]++/u', ' ', $statement)
+            ));
+        }
+        return $this->pdo->exec($statement);
     }
 
     /**

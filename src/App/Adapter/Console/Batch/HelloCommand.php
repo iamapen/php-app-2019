@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Acme\App\Adapter\Console\Command;
+namespace Acme\App\Adapter\Console\Batch;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;

@@ -28,7 +28,7 @@ class LimitCondition
      * @param Limit|null $limit
      * @return static
      */
-    public static function create(array $selectFields, ?Limit $limit = null): self
+    public static function create(array $selectFields = [], ?Limit $limit = null): self
     {
         return new static($selectFields, $limit);
     }

@@ -16,6 +16,7 @@ $builder->addDefinitions(__DIR__ . '/container/log.php');
 // TODO session
 // TODO template engine
 // TODO DB connection
+$builder->addDefinitions(__DIR__ . '/container/db.php');
 
 /* @var $container AppContainerInterface */
 $container = $builder->build();

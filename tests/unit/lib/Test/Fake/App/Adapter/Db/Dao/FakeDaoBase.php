@@ -2,7 +2,7 @@
 
 namespace Acme\Test\Fake\App\Adapter\Db\Dao;
 
-use Acme\App\Adapter\Db\Dao\DaoBase;
+use Acme\App\Adapter\Database\Dao\DaoBase;
 
 class FakeDaoBase extends DaoBase
 {

@@ -9,7 +9,6 @@ use Monolog\Formatter;
 use Monolog\Handler\RotatingFileHandler;
 use Monolog\Logger;
 use Monolog\Processor;
-use Monolog\Processor\IntrospectionProcessor;
 use Psr\Log\LoggerInterface;
 
 return [
@@ -25,11 +24,9 @@ return [
                 ))
                     ->setFilenameFormat('{filename}_{date}', 'Ymd')
                     ->setFormatter(new Formatter\LineFormatter(null, null, true))
-            )->pushProcessor(
-                new Processor\IntrospectionProcessor()
-            )->pushProcessor(
-                new Processor\ProcessIdProcessor()
-            ),
+            )
+            ->pushProcessor(new Processor\IntrospectionProcessor())
+            ->pushProcessor(new Processor\ProcessIdProcessor()),
     LoggerInterface::class => function (AppContainer $c) {
         return $c->get(sprintf('LOGGER_%s', PHP_SAPI));
     },
@@ -44,9 +41,9 @@ return [
                     0666
                 ))
                     ->setFilenameFormat('{filename}_{date}', 'Ymd')
-            )->pushProcessor(
-                new IntrospectionProcessor()
-            )->pushProcessor(
-                new \Monolog\Processor\ProcessIdProcessor()
-            ),
+            )
+            ->pushProcessor(new Processor\IntrospectionProcessor())
+            ->pushProcessor(new Processor\ProcessIdProcessor())
+            ->pushProcessor(new Processor\MemoryPeakUsageProcessor())
+            ->pushProcessor(new Processor\MemoryUsageProcessor()),
 ];

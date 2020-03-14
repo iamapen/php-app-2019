@@ -14,7 +14,8 @@
         "doctrine/dbal": "^2.10",
         "symfony/stopwatch": "^5.0",
         "myclabs/php-enum": "^1.7",
-        "nesbot/carbon": "^2.31"
+        "nesbot/carbon": "^2.31",
+        "ramsey/uuid": "^3.9"
     },
     "autoload": {
         "psr-4": {

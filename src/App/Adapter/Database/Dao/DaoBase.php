@@ -46,6 +46,30 @@ abstract class DaoBase implements LoggerAwareInterface
         return $stmt;
     }
 
+    /**
+     * @param $statement
+     * @param array|null $input_parameters
+     * @return array|null
+     */
+    protected function prepareAndExecuteOne($statement, ?array $input_parameters = null): ?array
+    {
+        if (!($this->logger instanceof NullLogger)) {
+            $this->logger->debug(SqlDumper::dump(
+                preg_replace('/[\p{C}\p{Z}]++/u', ' ', $statement),
+                $input_parameters
+            ));
+        }
+
+        $stmt = $this->pdo->prepare($statement);
+        $stmt->execute($input_parameters);
+
+        $result = $stmt->fetch();
+        if ($result === false) {
+            return null;
+        }
+        return $result;
+    }
+
     protected function exec($statement): int
     {
         if (!($this->logger instanceof NullLogger)) {

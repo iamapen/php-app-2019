@@ -1,9 +1,9 @@
 <?php
 
-namespace Acme\App\Adapter\Console\Batch\SampleJobQueue;
+namespace Acme\App\Adapter\Console\Batch\SampleQueue02;
 
-use Acme\App\Adapter\Database\Command\Queue01Command;
-use Acme\App\Adapter\Database\Dao\Queue01Dao;
+use Acme\App\Adapter\Database\Command\Queue02Command;
+use Acme\App\Adapter\Database\Dao\Queue02Dao;
 use Acme\App\AppContainerHolder;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -21,9 +21,9 @@ class PublishBatch extends Command
 
     protected function configure()
     {
-        $this->setName('jobQueue01:publish')
+        $this->setName('jobQueue02:publish')
             ->setDescription(<<<EOF
-MySQLによるキュー実装その1 Publisher
+MySQLによるキュー実装その2 Publisher
 EOF
             )
             ->addArgument(
@@ -36,11 +36,11 @@ EOF
     {
         $logger = AppContainerHolder::instance()->loggerApp();
         $dbMaster = AppContainerHolder::instance()->dbMainMaster();
-        $cmd = new Queue01Command(new Queue01Dao($dbMaster));
+        $cmd = new Queue02Command(new Queue02Dao($dbMaster));
 
         $enqueues = 0;
         foreach ($input->getArgument('job-ids') as $jobId) {
-            $enqueues += $cmd->publish($jobId);
+            $enqueues += $cmd->publishByString($jobId);
         }
         $logger->info(sprintf('enqueued %s rows', $enqueues));
         return 0;

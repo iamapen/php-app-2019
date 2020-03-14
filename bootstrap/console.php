@@ -20,5 +20,7 @@ $app->registerCommand(Batch\ChainCommand::class);
 
 $app->registerCommand(Batch\SampleJobQueue\SubscribeBatch::class);
 $app->registerCommand(Batch\SampleJobQueue\PublishBatch::class);
+$app->registerCommand(Batch\SampleQueue02\PublishBatch::class);
+$app->registerCommand(Batch\SampleQueue02\SubscribeBatch::class);
 
 return $app;

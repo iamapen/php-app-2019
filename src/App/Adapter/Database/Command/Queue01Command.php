@@ -28,7 +28,7 @@ class Queue01Command implements JobQueueCommand
         return $this->dao->findFromRunning($limit);
     }
 
-    public function subscribeDone()
+    public function dequeue()
     {
         $this->dao->dropRunning();
     }

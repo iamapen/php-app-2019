@@ -16,11 +16,17 @@ services:
       - ./mysql/conf.d:/etc/mysql/conf.d
       - ./log/mysql:/var/log/mysql
 
-  sqs:
-    build: ./elasticMq
+  localstack:
+    build: ./localstack
     restart: always
+    environment:
+      - SERVICES=sqs,sns,s3
+      - AWS_ACCESS_KEY_ID=dummy
+      - AWS_SECRET_ACCESS_KEY=dummy
+      - AWS_DEFAULT_REGION=ap-northeast-1
+    #      - DATA_DIR=${DATA_DIR- }
+    #      - PORT_WEB_UI=${PORT_WEB_UI- }
     ports:
-      - 9324:9324
-    volumes:
-      - ./elasticMq/var/elasticMQ:/var/elasticMQ
-
+      - 8080:8080
+      - 4572:4572
+      - 4576:4576

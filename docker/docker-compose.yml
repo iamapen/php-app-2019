@@ -15,3 +15,12 @@ services:
       - ./mysql/initdb.d:/docker-entrypoint-initdb.d
       - ./mysql/conf.d:/etc/mysql/conf.d
       - ./log/mysql:/var/log/mysql
+
+  sqs:
+    build: ./elasticMq
+    restart: always
+    ports:
+      - 9324:9324
+    volumes:
+      - ./elasticMq/var/elasticMQ:/var/elasticMQ
+

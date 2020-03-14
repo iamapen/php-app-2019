@@ -4,6 +4,7 @@ namespace Acme\App\Adapter\Database\Dao;
 
 use Acme\Support\Database\Pdo\PdoInterface;
 use Acme\Support\Database\Pdo\PdoStatementInterface;
+use Acme\Support\Database\QueryBuilder\MysqlBulkInsert;
 use Acme\Support\Database\SqlDumper;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
@@ -16,6 +17,9 @@ abstract class DaoBase implements LoggerAwareInterface
 
     /** @var PdoInterface */
     protected $pdo;
+
+    /** @var string */
+    protected $tableName;
 
     public function __construct(PdoInterface $pdo, ?LoggerInterface $logger = null)
     {
@@ -78,6 +82,13 @@ abstract class DaoBase implements LoggerAwareInterface
             ));
         }
         return $this->pdo->exec($statement);
+    }
+
+    final protected function bulkInsert($chunk): int
+    {
+        $qb = new MysqlBulkInsert();
+        $sql = $qb->buildStatement($this->tableName, $chunk, $this->pdo);
+        return $this->pdo->exec($sql);
     }
 
     /**

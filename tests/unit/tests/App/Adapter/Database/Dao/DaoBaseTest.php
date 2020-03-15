@@ -2,14 +2,15 @@
 
 namespace Acme\App\Adapter\Database\Dao;
 
+use Acme\Support\Database\Pdo\NoopPdo;
 use Acme\Test\Fake\App\Adapter\Db\Dao\FakeDaoBase;
-use Acme\Test\TestCase\DbBaseTestCase;
+use Acme\Test\TestCase\BaseTestCase;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 
-class DaoBaseTest extends DbBaseTestCase
+class DaoBaseTest extends BaseTestCase
 {
     function test_prepareAndExecute_ログが記録されること()
     {
@@ -18,7 +19,7 @@ class DaoBaseTest extends DbBaseTestCase
             (new StreamHandler($fp))->setFormatter(new LineFormatter('%message%')),
         ]);
 
-        $sut = new FakeDaoBase($this->getPdo(), $logger);
+        $sut = new FakeDaoBase(new NoopPdo(), $logger);
         $sut->passPrepareAndExecute('SELECT 1 FROM dual WHERE 1 = ?', ['1']);
 
         fseek($fp, 0);
@@ -33,7 +34,7 @@ class DaoBaseTest extends DbBaseTestCase
             (new StreamHandler($fp))->setFormatter(new LineFormatter('%message%')),
         ]);
 
-        $sut = new FakeDaoBase($this->getPdo(), $logger);
+        $sut = new FakeDaoBase(new NoopPdo(), $logger);
         $sut->passPrepareAndExecute('SELECT 1  FROM dual  WHERE 1 = ?', ['2']);
 
         fseek($fp, 0);
@@ -43,7 +44,7 @@ class DaoBaseTest extends DbBaseTestCase
 
     function test_createMysqlQueryBuilder()
     {
-        $sut = new FakeDaoBase($this->getPdo());
+        $sut = new FakeDaoBase(new NoopPdo());
 
         $this->assertInstanceOf(QueryBuilder::class, $sut->passCreateQueryBuilder());
     }

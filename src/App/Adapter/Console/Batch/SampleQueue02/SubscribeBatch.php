@@ -5,6 +5,7 @@ namespace Acme\App\Adapter\Console\Batch\SampleQueue02;
 use Acme\App\Adapter\Database\Command\Queue02Command;
 use Acme\App\Adapter\Database\Dao\Queue02Dao;
 use Acme\App\AppContainerHolder;
+use Acme\Support\Lock\FLocker;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -13,6 +14,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 class SubscribeBatch extends Command
 {
     private const PARAM_JOB_ID = 'job-id';
+
+    private const EXIT_LOCK_FAILED = 1;
 
     public function __construct()
     {
@@ -36,6 +39,13 @@ EOF
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $logger = AppContainerHolder::instance()->loggerApp();
+
+        $locker = $this->createLocker();
+        if (!$locker->getLock()) {
+            $logger->debug('lock failed.');
+            return static::EXIT_LOCK_FAILED;
+        }
+
         $dbMaster = AppContainerHolder::instance()->dbMainMaster();
         $cmd = new Queue02Command(new Queue02Dao($dbMaster));
 
@@ -64,6 +74,13 @@ EOF
         $deleteAffects = $cmd->dequeueByMsgId($job['id'], $job['job_id']);
         $logger->info(sprintf("dequeued %s rows", $deleteAffects));
 
+        $locker->unLockAndClose();
         return 0;
+    }
+
+    private function createLocker()
+    {
+        $lockfile = sprintf('%s/%s', getenv('LOCK_DIR'), $this->getName());
+        return FLocker::ofFullpath($lockfile);
     }
 }

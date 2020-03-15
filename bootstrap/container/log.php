@@ -41,13 +41,14 @@ return [
                     0666
                 ))
                     ->setFilenameFormat('{filename}_{date}', 'Ymd')
+                    ->pushProcessor(new Processor\IntrospectionProcessor())
+                    ->pushProcessor(new Processor\ProcessIdProcessor())
+                    ->pushProcessor(new Processor\MemoryPeakUsageProcessor())
+                    ->pushProcessor(new Processor\MemoryUsageProcessor())
             )
             ->pushHandler(
                 (new Handler\StreamHandler('php://stderr'))
                     ->setFormatter(new Formatter\LineFormatter(null, 'Y-m-d H:i:s.u', true))
             )
-            ->pushProcessor(new Processor\IntrospectionProcessor())
-            ->pushProcessor(new Processor\ProcessIdProcessor())
-            ->pushProcessor(new Processor\MemoryPeakUsageProcessor())
-            ->pushProcessor(new Processor\MemoryUsageProcessor()),
+    ,
 ];

@@ -15,6 +15,7 @@ putenv(sprintf('APP_ROOT=%s', realpath(__DIR__ . '/..')));
 putenv(sprintf('STORAGE_DIR=%s', getenv('APP_ROOT') . '/storage'));
 putenv(sprintf('LOG_DIR=%s', getenv('STORAGE_DIR') . '/logs'));
 putenv(sprintf('TMP_DIR=%s', getenv('STORAGE_DIR') . '/tmp'));
+putenv(sprintf('LOCK_DIR=%s', getenv('STORAGE_DIR') . '/lock'));
 
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
 $dotenv->load();

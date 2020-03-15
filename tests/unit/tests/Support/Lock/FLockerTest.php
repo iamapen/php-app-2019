@@ -18,8 +18,8 @@ class FLockerTest extends TestCase
 
     function testCreateByFullpath()
     {
-        $locker1 = Flocker::createByFullpath($this->lockfile);
-        $locker2 = Flocker::createByFullpath($this->lockfile);
+        $locker1 = Flocker::ofFullpath($this->lockfile);
+        $locker2 = Flocker::ofFullpath($this->lockfile);
 
         // ロック取得成功
         $this->assertTrue($locker1->getLock());
@@ -37,9 +37,9 @@ class FLockerTest extends TestCase
     public function testCreateByResource()
     {
         $fp1 = fopen($this->lockfile, 'w+b');
-        $locker1 = Flocker::createByResource($fp1);
+        $locker1 = Flocker::ofResource($fp1);
         $fp2 = fopen($this->lockfile, 'w+b');
-        $locker2 = Flocker::createByResource($fp2);
+        $locker2 = Flocker::ofResource($fp2);
 
         // ロック取得成功
         $this->assertTrue($locker1->getLock());
@@ -58,23 +58,35 @@ class FLockerTest extends TestCase
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('fp must be resource, "invalid" given');
-        $sut = Flocker::createByResource('invalid');
+        Flocker::ofResource('invalid');
     }
 
     public function testGetLock()
     {
         $this->assertFalse(file_exists($this->lockfile));
-        $sut = Flocker::createByFullpath($this->lockfile);
+        $sut = Flocker::ofFullpath($this->lockfile);
+        $this->assertFalse(file_exists($this->lockfile));
+
+        $this->assertSame(true, $sut->getLock());
         $this->assertTrue(file_exists($this->lockfile));
 
         $sut->unLock();
     }
 
+    function testGetLock_failed()
+    {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('open failed "/PATH/TO/invalid"');
+
+        $sut = Flocker::ofFullpath('/PATH/TO/invalid');
+        $sut->getLock();
+    }
+
     public function testUnLock()
     {
-        // flock() の挙動に倣い、ロック前でも成功する
-        $sut = Flocker::createByFullpath($this->lockfile);
-        $this->assertTrue($sut->unLock());
+        // ロック前はfalse
+        $sut = Flocker::ofFullpath($this->lockfile);
+        $this->assertFalse($sut->unLock());
 
         $this->assertTrue($sut->getLock());
         $this->assertTrue($sut->unLock());
@@ -83,7 +95,7 @@ class FLockerTest extends TestCase
     public function testUnLockAndClose()
     {
         $fp = fopen($this->lockfile, 'w+b');
-        $sut = Flocker::createByResource($fp);
+        $sut = Flocker::ofResource($fp);
 
         // closeされない
         $sut->unLock();

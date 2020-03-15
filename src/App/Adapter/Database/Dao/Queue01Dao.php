@@ -6,7 +6,7 @@ use Acme\Support\Database\QueryBuilder\LimitCondition;
 
 class Queue01Dao extends DaoBase
 {
-    private $tableName = 'queue01';
+    protected $tableName = 'queue01';
 
     private function resolveRunningTableName()
     {

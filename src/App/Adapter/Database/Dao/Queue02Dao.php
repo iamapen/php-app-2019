@@ -7,7 +7,7 @@ use Acme\Support\Database\QueryBuilder\LimitCondition;
 
 class Queue02Dao extends DaoBase
 {
-    private $tableName = 'queue02';
+    protected $tableName = 'queue02';
 
     public function findOneByJobId($jobId, $uuid, ?LimitCondition $limit = null): ?array
     {
